@@ -123,4 +123,16 @@
   .projects-grid {
     grid-template-columns: 1fr;
   }
+
+  .project-content {
+    padding: 1.5rem;
+  }
+
+  .project-title {
+    font-size: 1.3rem;
+  }
+
+  .project-image {
+    height: 200px;
+  }
 }

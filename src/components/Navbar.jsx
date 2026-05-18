@@ -5,6 +5,7 @@ import './Navbar.css';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +26,14 @@ const Navbar = () => {
     >
       <div className="nav-container container">
         <div className="logo">H.K.</div>
-        <ul className="nav-menu">
+        
+        <div className={`menu-toggle ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </div>
+
+        <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
           {navLinks.map((link) => (
             <li key={link} className="nav-item">
               <Link 
@@ -36,6 +44,7 @@ const Navbar = () => {
                 offset={-70} 
                 duration={500}
                 className="nav-link"
+                onClick={() => setMenuOpen(false)}
               >
                 {link}
               </Link>

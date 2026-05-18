@@ -216,3 +216,30 @@ ul {
 @keyframes shine {
   to { left: 200%; }
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .section {
+    padding: 5rem 0;
+  }
+  
+  .section-title {
+    font-size: 2.2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .container {
+    padding: 0 1.5rem;
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+}

@@ -52,15 +52,17 @@ const Home = () => {
             <a href="#contact" className="btn btn-primary">
               <FaBriefcase /> Hire Me
             </a>
-            <button className="btn btn-outline" onClick={() => setShowCV(true)}>
-              <FaEye /> View CV
-            </button>
-            <a href="/Hardik_New_CV.pdf" className="btn btn-outline" download onClick={() => {
-              const downloads = parseInt(localStorage.getItem('portfolio_cv_downloads') || '0', 10);
-              localStorage.setItem('portfolio_cv_downloads', downloads + 1);
-            }}>
-              <FaDownload /> Download CV
-            </a>
+            <div className="cv-buttons">
+              <button className="btn btn-outline" onClick={() => setShowCV(true)}>
+                <FaEye /> View CV
+              </button>
+              <a href="/Hardik_New_CV.pdf" className="btn btn-outline" download onClick={() => {
+                const downloads = parseInt(localStorage.getItem('portfolio_cv_downloads') || '0', 10);
+                localStorage.setItem('portfolio_cv_downloads', downloads + 1);
+              }}>
+                <FaDownload /> Download CV
+              </a>
+            </div>
           </div>
         </motion.div>
 

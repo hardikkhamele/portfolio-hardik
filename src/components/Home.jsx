@@ -1,9 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FaDownload, FaBriefcase } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaDownload, FaBriefcase, FaEye, FaTimes } from 'react-icons/fa';
 import './Home.css';
 
 const Home = () => {
+  const [showCV, setShowCV] = useState(false);
+
   return (
     <section id="home" className="section home-section">
       <div className="container home-container">
@@ -50,7 +52,10 @@ const Home = () => {
             <a href="#contact" className="btn btn-primary">
               <FaBriefcase /> Hire Me
             </a>
-            <a href="/Hardik_CV.pdf" className="btn btn-outline" download onClick={() => {
+            <button className="btn btn-outline" onClick={() => setShowCV(true)}>
+              <FaEye /> View CV
+            </button>
+            <a href="/Hardik_New_CV.pdf" className="btn btn-outline" download onClick={() => {
               const downloads = parseInt(localStorage.getItem('portfolio_cv_downloads') || '0', 10);
               localStorage.setItem('portfolio_cv_downloads', downloads + 1);
             }}>
@@ -70,6 +75,35 @@ const Home = () => {
           </div>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showCV && (
+          <motion.div 
+            className="cv-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowCV(false)}
+          >
+            <motion.div 
+              className="cv-modal-content"
+              initial={{ y: 50, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 50, opacity: 0, scale: 0.9 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="cv-modal-close" onClick={() => setShowCV(false)}>
+                <FaTimes />
+              </button>
+              <iframe 
+                src="/Hardik_New_CV.pdf#toolbar=0" 
+                title="Hardik CV" 
+                className="cv-iframe"
+              ></iframe>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

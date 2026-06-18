@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [messages, setMessages] = useState([]);
   const [stats, setStats] = useState({});
   const [cvDownloads, setCvDownloads] = useState(0);
+  const [resumeHistory, setResumeHistory] = useState([]);
 
   const handleResumeUpload = (e) => {
     const file = e.target.files[0];
@@ -22,6 +23,16 @@ const AdminDashboard = () => {
         try {
           localStorage.setItem('portfolio_resume_data', reader.result);
           localStorage.setItem('portfolio_resume_name', file.name);
+          
+          const history = JSON.parse(localStorage.getItem('portfolio_resume_history') || '[]');
+          const newEntry = {
+            name: file.name,
+            date: new Date().toISOString()
+          };
+          history.push(newEntry);
+          localStorage.setItem('portfolio_resume_history', JSON.stringify(history));
+          setResumeHistory([...history].reverse());
+
           alert('Resume updated successfully!');
         } catch (error) {
           alert("Error saving resume. The file might be too large for local storage.");
@@ -45,6 +56,9 @@ const AdminDashboard = () => {
 
     const downloads = parseInt(localStorage.getItem('portfolio_cv_downloads') || '0', 10);
     setCvDownloads(downloads);
+
+    const storedHistory = JSON.parse(localStorage.getItem('portfolio_resume_history') || '[]');
+    setResumeHistory(storedHistory.reverse());
   }, [navigate]);
 
   const handleLogout = () => {
@@ -135,14 +149,39 @@ const AdminDashboard = () => {
           </motion.div>
         </div>
 
-        <motion.div 
-          className="glass" 
-          style={{ padding: '2rem', borderRadius: '15px' }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>Recent Messages</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+          <motion.div 
+            className="glass" 
+            style={{ padding: '2rem', borderRadius: '15px' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>Resume Upload History</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '400px', overflowY: 'auto' }}>
+              {resumeHistory.length > 0 ? (
+                resumeHistory.map((entry, index) => (
+                  <div key={index} style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '10px', border: '1px solid #222' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <span style={{ color: '#fff', fontWeight: 'bold' }}>{entry.name}</span>
+                      <span style={{ color: '#666', fontSize: '0.9rem' }}>{new Date(entry.date).toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p style={{ textAlign: 'center', color: '#666', padding: '1rem 0' }}>No history found.</p>
+              )}
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className="glass" 
+            style={{ padding: '2rem', borderRadius: '15px' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>Recent Messages</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {messages.length > 0 ? (
@@ -165,6 +204,7 @@ const AdminDashboard = () => {
             )}
           </div>
         </motion.div>
+        </div>
       </div>
     </div>
   );

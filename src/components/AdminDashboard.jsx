@@ -10,6 +10,27 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({});
   const [cvDownloads, setCvDownloads] = useState(0);
 
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+        alert("File is too large! Please upload a file smaller than 4MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        try {
+          localStorage.setItem('portfolio_resume_data', reader.result);
+          localStorage.setItem('portfolio_resume_name', file.name);
+          alert('Resume updated successfully!');
+        } catch (error) {
+          alert("Error saving resume. The file might be too large for local storage.");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     const auth = localStorage.getItem('portfolio_admin_auth');
     if (!auth) {
@@ -41,11 +62,27 @@ const AdminDashboard = () => {
   return (
     <div style={{ minHeight: '100vh', padding: '2rem', backgroundColor: '#0a0a0a', color: '#fff' }}>
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Admin Dashboard</h1>
-          <button onClick={handleLogout} className="btn btn-primary" style={{ padding: '0.5rem 1.5rem' }}>
-            Logout
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <input 
+              type="file" 
+              id="resume-upload" 
+              style={{ display: 'none' }} 
+              accept=".pdf,.doc,.docx" 
+              onChange={handleResumeUpload} 
+            />
+            <label 
+              htmlFor="resume-upload" 
+              className="btn btn-outline" 
+              style={{ padding: '0.5rem 1.5rem', cursor: 'pointer', margin: 0, border: '1px solid #4ade80', color: '#4ade80' }}
+            >
+              Update Resume
+            </label>
+            <button onClick={handleLogout} className="btn btn-primary" style={{ padding: '0.5rem 1.5rem', margin: 0 }}>
+              Logout
+            </button>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>

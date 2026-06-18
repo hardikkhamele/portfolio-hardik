@@ -1,10 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaDownload, FaBriefcase, FaEye, FaTimes } from 'react-icons/fa';
 import './Home.css';
 
 const Home = () => {
   const [showCV, setShowCV] = useState(false);
+  const [resumeData, setResumeData] = useState('/Hardik_New_CV.pdf');
+  const [resumeName, setResumeName] = useState('Hardik_New_CV.pdf');
+
+  useEffect(() => {
+    const storedResume = localStorage.getItem('portfolio_resume_data');
+    const storedName = localStorage.getItem('portfolio_resume_name');
+    if (storedResume) {
+      if (storedResume.startsWith('data:')) {
+        try {
+          const byteString = atob(storedResume.split(',')[1]);
+          const mimeString = storedResume.split(',')[0].split(':')[1].split(';')[0];
+          const ab = new ArrayBuffer(byteString.length);
+          const ia = new Uint8Array(ab);
+          for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+          }
+          const blob = new Blob([ab], { type: mimeString });
+          const url = URL.createObjectURL(blob);
+          setResumeData(url);
+        } catch (e) {
+          setResumeData(storedResume);
+        }
+      } else {
+        setResumeData(storedResume);
+      }
+      if (storedName) setResumeName(storedName);
+    }
+  }, []);
 
   return (
     <section id="home" className="section home-section">
@@ -56,7 +84,7 @@ const Home = () => {
               <button className="btn btn-outline" onClick={() => setShowCV(true)}>
                 <FaEye /> View CV
               </button>
-              <a href="/Hardik_New_CV.pdf" className="btn btn-outline" download onClick={() => {
+              <a href={resumeData} className="btn btn-outline" download={resumeName} onClick={() => {
                 const downloads = parseInt(localStorage.getItem('portfolio_cv_downloads') || '0', 10);
                 localStorage.setItem('portfolio_cv_downloads', downloads + 1);
               }}>
@@ -98,7 +126,7 @@ const Home = () => {
                 <FaTimes />
               </button>
               <iframe 
-                src="/Hardik_New_CV.pdf#toolbar=0" 
+                src={resumeData.startsWith('blob:') || resumeData.startsWith('data:') ? resumeData : `${resumeData}#toolbar=0`} 
                 title="Hardik CV" 
                 className="cv-iframe"
               ></iframe>
